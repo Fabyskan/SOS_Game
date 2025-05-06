@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class SOSTest {
 
-    /*
+
     @Test
     public void testGetExample(){
         Entry[][] example = SOS.getExample();
@@ -64,9 +64,9 @@ public class SOSTest {
         assertEquals( "example at 5, 5 must be Entry.O_UNSCORED", example[5][5], Entry.O_UNSCORED );
 
     }
-    */
 
-    /*
+
+
     @Test
     public void testCheckBoard(){
         assertThrows("must throw IllegalArgumentException on null",
@@ -91,9 +91,9 @@ public class SOSTest {
                 IllegalArgumentException.class,
                 () -> SOS.checkBoard(new Entry[][] {{null,null,null,null}, {null,null,null,null}, null, {null,null,null,null}}));
     }
-    */
 
-    /*
+
+
     @Test
     public void testBoardFull(){
         Entry[][] board = new Entry[4][4];
@@ -105,7 +105,7 @@ public class SOSTest {
         Arrays.fill(board, new Entry[] {Entry.S_UNSCORED, Entry.S_UNSCORED, Entry.S_UNSCORED, Entry.S_UNSCORED});
         assertTrue("must return true when full", SOS.boardFull(board));
     }
-    */
+
 
     /*
     @Test

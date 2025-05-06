@@ -1,6 +1,8 @@
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.Test;
+
 import java.util.Arrays;
+
+import static org.junit.Assert.*;
 
 public class SOSTest {
 
@@ -65,8 +67,6 @@ public class SOSTest {
 
     }
 
-
-
     @Test
     public void testCheckBoard(){
         assertThrows("must throw IllegalArgumentException on null",
@@ -93,7 +93,6 @@ public class SOSTest {
     }
 
 
-
     @Test
     public void testBoardFull(){
         Entry[][] board = new Entry[4][4];
@@ -106,8 +105,6 @@ public class SOSTest {
         assertTrue("must return true when full", SOS.boardFull(board));
     }
 
-
-    /*
     @Test
     public void testMoveInvalidArgument() {
             Entry[][] board = new Entry[6][6];
@@ -139,7 +136,7 @@ public class SOSTest {
                     IllegalArgumentException.class,
                     () -> SOS.move(board, Entry.S_UNSCORED, 1, 6));
     }
-    */
+
 
     /*
     @Test

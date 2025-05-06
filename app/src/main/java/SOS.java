@@ -63,8 +63,15 @@ public class SOS {
         return board;
     }
 
+    /**
+     * Überprüft das Board auf Richtigkeit (Mindestgröße und Symmetrie)
+     * @param board Das zu prüfende Board
+     */
     public static void checkBoard(Entry[][] board) {
-        if (board.length < 3) {
+        if (board == null) {
+            throw new IllegalArgumentException("Board is empty");
+        }
+        if (board.length < 4) {
             throw new IllegalArgumentException("The board must be 3x3 at least!");
         }
         for (int i = 0; i < board.length; i++) {
@@ -134,5 +141,19 @@ public class SOS {
         return true;
     }
 
-   // public static int move(Entry[][] board, Entry entry, int row, int col) {}
+    public static int move(Entry[][] board, Entry entry, int row, int col) {
+        checkBoard(board);
+        if (entry != Entry.S_UNSCORED && entry != Entry.O_UNSCORED) {
+            throw new IllegalArgumentException("Entry must be 'S' or 'O'");
+        }
+        if (row > board.length - 1 || row < 0 ) {
+            throw new IllegalArgumentException("Fuck you");
+        }
+        if (col > board.length - 1 || col < 0 ) {
+            throw new IllegalArgumentException("Fuck me");
+        }
+        if (board[row][col] != null) { throw new IllegalArgumentException("Da sitzt scho was"); }
+
+        return 0;
+    }
 }

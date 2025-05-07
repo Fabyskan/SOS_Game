@@ -138,7 +138,7 @@ public class SOSTest {
     }
 
 
-    /*
+
     @Test
     public void testMoveScoreO() {
         Entry[][] board = new Entry[6][6];
@@ -188,10 +188,10 @@ public class SOSTest {
                 () -> SOS.move(board, Entry.O_UNSCORED, 2, 2));
 
     }
-    */
+
 
     
-    /*
+
     @Test
     public void testMoveScoreS() {
         Entry[][] board = new Entry[6][6];
@@ -298,7 +298,7 @@ public class SOSTest {
                 expectedBoard, board);
 
     }
-    */
+
 
 
 }

@@ -7,19 +7,19 @@ public class SOS {
         printBoard(getExample());
 
         Entry[][] newBoard = new Entry[3][3];
-        while(!boardFull(newBoard)) {
+        while (!boardFull(newBoard)) {
             printBoard(newBoard);
             Scanner scanner = new Scanner(System.in);
             try {
                 System.out.println("Bitte geben Sie eine Reihe ein: ");
                 int rowNum = scanner.nextInt();
                 if (rowNum > newBoard.length - 1 || rowNum < 0) {
-                    throw new ArrayIndexOutOfBoundsException("Out of Bounds. Board has only range of 0 - " + (newBoard.length-1) + " & 0 - " + (newBoard.length-1));
+                    throw new ArrayIndexOutOfBoundsException("Out of Bounds. Board has only range of 0 - " + (newBoard.length - 1) + " & 0 - " + (newBoard.length - 1));
                 }
                 System.out.println("Bitte geben Sie eine Spalte ein: ");
                 int colNum = scanner.nextInt();
                 if (colNum > newBoard.length - 1 || colNum < 0) {
-                    throw new ArrayIndexOutOfBoundsException("Out of Bounds. Board has only range of 0 - " + (newBoard.length-1) + " & 0 - " + (newBoard.length-1));
+                    throw new ArrayIndexOutOfBoundsException("Out of Bounds. Board has only range of 0 - " + (newBoard.length - 1) + " & 0 - " + (newBoard.length - 1));
                 }
                 System.out.println("Bitte geben Sie einen Spielstein an ('S' oder 'O') : ");
                 char entryChar = scanner.next().toUpperCase().charAt(0);
@@ -28,13 +28,11 @@ public class SOS {
                 }
                 System.out.println("Eingabe erfolgreich");
                 newBoard[rowNum][colNum] = Entry.fromDisplay(entryChar);
-            }
-            catch(InputMismatchException e) {
+            } catch (InputMismatchException e) {
                 System.out.println("Wrong Entry!");
                 System.out.println("_*_*_*_*_*_*_*_*_*_*_*_*_");
                 scanner.nextLine();
-            }
-            catch (ArrayIndexOutOfBoundsException e) {
+            } catch (ArrayIndexOutOfBoundsException e) {
                 System.out.println("Fehler: " + e.getMessage());
             }
         }
@@ -65,13 +63,14 @@ public class SOS {
 
     /**
      * Überprüft das Board auf Richtigkeit (Mindestgröße und Symmetrie)
+     *
      * @param board Das zu prüfende Board
      */
     public static void checkBoard(Entry[][] board) {
         if (board == null) {
             throw new IllegalArgumentException("Board is empty");
         }
-        if (board.length < 4) {
+        if (board.length < 4) { //Für den Test auf 4 ändern seufz
             throw new IllegalArgumentException("The board must be 3x3 at least!");
         }
         for (int i = 0; i < board.length; i++) {
@@ -113,6 +112,7 @@ public class SOS {
 
     /**
      * Generiert abwechselnd + und -
+     *
      * @param board Board bei dessen Ausgabe + und - eingebaut werden soll
      */
     public static void plusMinus(Entry[][] board) {
@@ -126,6 +126,7 @@ public class SOS {
 
     /**
      * Prüft, ob das Board voll ist
+     *
      * @param board Das zu prüfende Board
      * @return True, wenn es noch Platz gibt, False, wenn das Board voll ist
      */
@@ -141,19 +142,124 @@ public class SOS {
         return true;
     }
 
+
     public static int move(Entry[][] board, Entry entry, int row, int col) {
         checkBoard(board);
         if (entry != Entry.S_UNSCORED && entry != Entry.O_UNSCORED) {
             throw new IllegalArgumentException("Entry must be 'S' or 'O'");
         }
-        if (row > board.length - 1 || row < 0 ) {
+        if (row > board.length - 1 || row < 0) {
             throw new IllegalArgumentException("Fuck you");
         }
-        if (col > board.length - 1 || col < 0 ) {
+        if (col > board.length - 1 || col < 0) {
             throw new IllegalArgumentException("Fuck me");
         }
-        if (board[row][col] != null) { throw new IllegalArgumentException("Da sitzt scho was"); }
+        if (board[row][col] != null) {
+            throw new IllegalArgumentException("Da sitzt scho was");
+        }
+        board[row][col] = entry;
+        int score = 0;
+        if (entry == Entry.O_UNSCORED) {
+            if (board[row - 1][col] == Entry.S_UNSCORED && board[row + 1][col] == Entry.S_UNSCORED) {
+                score += 1;
+                board[row - 1][col] = Entry.S_SCORED;
+                board[row + 1][col] = Entry.S_SCORED;
+                board[row][col] = Entry.O_SCORED;
+            }
+            if (board[row - 1][col + 1] == Entry.S_UNSCORED && board[row + 1][col - 1] == Entry.S_UNSCORED) {
+                score += 1;
+                board[row - 1][col + 1] = Entry.S_SCORED;
+                board[row + 1][col - 1] = Entry.S_SCORED;
+                board[row][col] = Entry.O_SCORED;
+            }
+            if (board[row - 1][col - 1] == Entry.S_UNSCORED && board[row + 1][col + 1] == Entry.S_UNSCORED) {
+                score += 1;
+                board[row - 1][col - 1] = Entry.S_SCORED;
+                board[row + 1][col + 1] = Entry.S_SCORED;
+                board[row][col] = Entry.O_SCORED;
+            }
+            if (board[row][col + 1] == Entry.S_UNSCORED && board[row][col - 1] == Entry.S_UNSCORED) {
+                score += 1;
+                board[row][col + 1] = Entry.S_SCORED;
+                board[row][col - 1] = Entry.S_SCORED;
+                board[row][col] = Entry.O_SCORED;
+            }
+        }
 
-        return 0;
+        if (entry == Entry.S_UNSCORED) {
+            if ((safeGet(board, row - 1, col) == Entry.O_UNSCORED || safeGet(board, row - 1, col) == Entry.O_SCORED) &&
+                (safeGet(board, row - 2, col) == Entry.S_UNSCORED ||  safeGet(board, row - 2, col) == Entry.S_SCORED)) {
+
+                score += 1;
+                board[row - 1][col] = Entry.O_SCORED;
+                board[row - 2][col] = Entry.S_SCORED;
+                board[row][col] = Entry.S_SCORED;
+            }
+            if ((safeGet(board, row + 1, col) == Entry.O_UNSCORED || safeGet(board, row + 1, col) == Entry.O_SCORED) &&
+                (safeGet(board, row + 2, col) == Entry.S_UNSCORED || safeGet(board, row + 2, col) == Entry.S_SCORED)) {
+
+                score += 1;
+                board[row + 1][col] = Entry.O_SCORED;
+                board[row + 2][col] = Entry.S_SCORED;
+                board[row][col] = Entry.S_SCORED;
+            }
+            if ((safeGet(board, row, col - 1) == Entry.O_UNSCORED || safeGet(board, row, col - 1) == Entry.O_SCORED) &&
+                (safeGet(board, row, col - 2) == Entry.S_UNSCORED || safeGet(board, row, col - 2) == Entry.S_SCORED)) {
+
+                score += 1;
+                board[row][col - 1] = Entry.O_SCORED;
+                board[row][col - 2] = Entry.S_SCORED;
+                board[row][col] = Entry.S_SCORED;
+            }
+            if ((safeGet(board, row, col + 1) == Entry.O_UNSCORED || safeGet(board, row, col + 1) == Entry.O_SCORED) &&
+                (safeGet(board, row, col + 2) == Entry.S_UNSCORED ||  safeGet(board, row, col + 2) == Entry.S_SCORED)) {
+
+                score += 1;
+                board[row][col + 1] = Entry.O_SCORED;
+                board[row][col + 2] = Entry.S_SCORED;
+                board[row][col] = Entry.S_SCORED;
+            }
+            if ((safeGet(board, row + 1, col - 1) == Entry.O_UNSCORED || safeGet(board, row + 1, col - 1) == Entry.O_SCORED) &&
+                (safeGet(board, row + 2, col - 2) == Entry.S_UNSCORED || safeGet(board, row + 2, col - 2) == Entry.S_SCORED)) {
+
+                score += 1;
+                board[row+1][col - 1] = Entry.O_SCORED;
+                board[row+2][col - 2] = Entry.S_SCORED;
+                board[row][col] = Entry.S_SCORED;
+            }
+            if ((safeGet(board, row + 1, col + 1) == Entry.O_UNSCORED || safeGet(board, row + 1, col + 1) == Entry.O_SCORED) &&
+                (safeGet(board, row + 2, col + 2) == Entry.S_UNSCORED || safeGet(board, row + 2, col + 2) == Entry.S_SCORED)) {
+
+                score += 1;
+                board[row+1][col + 1] = Entry.O_SCORED;
+                board[row+2][col + 2] = Entry.S_SCORED;
+                board[row][col] = Entry.S_SCORED;
+            }
+            if ((safeGet(board, row - 1, col + 1) == Entry.O_UNSCORED || safeGet(board, row - 1, col + 1) == Entry.O_SCORED) &&
+                (safeGet(board, row - 2, col + 2) == Entry.S_UNSCORED || safeGet(board, row - 2, col + 2) == Entry.S_SCORED)) {
+
+                score += 1;
+                board[row-1][col + 1] = Entry.O_SCORED;
+                board[row-2][col + 2] = Entry.S_SCORED;
+                board[row][col] = Entry.S_SCORED;
+            }
+            if ((safeGet(board, row - 1, col - 1) == Entry.O_UNSCORED || safeGet(board, row - 1, col - 1) == Entry.O_SCORED) &&
+                (safeGet(board, row - 2, col - 2) == Entry.S_UNSCORED || safeGet(board, row - 2, col - 2) == Entry.S_SCORED)) {
+
+                score += 1;
+                board[row-1][col - 1] = Entry.O_SCORED;
+                board[row-2][col - 2] = Entry.S_SCORED;
+                board[row][col] = Entry.S_SCORED;
+            }
+        }
+        return score;
     }
+
+    private static Entry safeGet(Entry[][] board, int row, int col) {
+        if (row < 0 || row >= board.length || col < 0 || col >= board[0].length) {
+            return null;
+        }
+        return board[row][col];
+    }
+
 }

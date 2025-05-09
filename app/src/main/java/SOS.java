@@ -2,7 +2,10 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class SOS {
-
+    /**
+     * Druckt das Beispiel aus und ein kleines Brett bei dem man einige Züge spielen kann
+     * @param args Main Methoden Zeug
+     */
     public static void main(String[] args) {
         printBoard(getExample());
 
@@ -27,6 +30,8 @@ public class SOS {
                     throw new InputMismatchException("Entry must be 'O' or 'S'");
                 }
                 System.out.println("Eingabe erfolgreich");
+                int score = move(newBoard,Entry.fromDisplay(entryChar),rowNum, colNum);
+                System.out.println("Anzahl vervollständigter SOS:" + score);
                 newBoard[rowNum][colNum] = Entry.fromDisplay(entryChar);
             } catch (InputMismatchException e) {
                 System.out.println("Wrong Entry!");
@@ -38,6 +43,10 @@ public class SOS {
         }
     }
 
+    /**
+     * Methode die ein Beispielbrett zurückgibt
+     * @return Das Beispielbrett
+     */
     public static Entry[][] getExample() {
         char[][] example = {
                 {' ', ' ', ' ', ' ', ' ', 'S'},
@@ -70,7 +79,7 @@ public class SOS {
         if (board == null) {
             throw new IllegalArgumentException("Board is empty");
         }
-        if (board.length < 4) { //Für den Test auf 4 ändern seufz
+        if (board.length < 3) { //Für den Test auf 4 ändern seufz
             throw new IllegalArgumentException("The board must be 3x3 at least!");
         }
         for (int i = 0; i < board.length; i++) {
@@ -83,6 +92,10 @@ public class SOS {
         }
     }
 
+    /**
+     * Methode zum Ausgeben des aktuellen Spielbretts
+     * @param board Spielbrett
+     */
     public static void printBoard(Entry[][] board) {
         checkBoard(board);
         System.out.print("  ");
@@ -142,7 +155,14 @@ public class SOS {
         return true;
     }
 
-
+    /**
+     * Die move Methode prüft, ob ein gesetzter Spielstein zu einem SOS führt
+     * @param board Das Spielbrett
+     * @param entry Der Spielstein
+     * @param row Reihe des Bretts
+     * @param col Spalte des Bretts
+     * @return Anzahl an erfolgreichen SOS
+     */
     public static int move(Entry[][] board, Entry entry, int row, int col) {
         checkBoard(board);
         if (entry != Entry.S_UNSCORED && entry != Entry.O_UNSCORED) {
@@ -160,25 +180,29 @@ public class SOS {
         board[row][col] = entry;
         int score = 0;
         if (entry == Entry.O_UNSCORED) {
-            if (board[row - 1][col] == Entry.S_UNSCORED && board[row + 1][col] == Entry.S_UNSCORED) {
+            if ((safeGet(board, row - 1,col) == Entry.S_UNSCORED || safeGet(board, row - 1,col) == Entry.S_SCORED) &&
+                (safeGet(board,row + 1, col) == Entry.S_UNSCORED || safeGet(board,row + 1, col) == Entry.S_SCORED)) {
                 score += 1;
                 board[row - 1][col] = Entry.S_SCORED;
                 board[row + 1][col] = Entry.S_SCORED;
                 board[row][col] = Entry.O_SCORED;
             }
-            if (board[row - 1][col + 1] == Entry.S_UNSCORED && board[row + 1][col - 1] == Entry.S_UNSCORED) {
+            if ((safeGet(board,row - 1,col + 1) == Entry.S_UNSCORED || safeGet(board,row - 1,col + 1) == Entry.S_SCORED) &&
+                (safeGet(board,row + 1,col - 1) == Entry.S_UNSCORED || safeGet(board,row + 1,col - 1) == Entry.S_SCORED)) {
                 score += 1;
                 board[row - 1][col + 1] = Entry.S_SCORED;
                 board[row + 1][col - 1] = Entry.S_SCORED;
                 board[row][col] = Entry.O_SCORED;
             }
-            if (board[row - 1][col - 1] == Entry.S_UNSCORED && board[row + 1][col + 1] == Entry.S_UNSCORED) {
+            if ((safeGet(board,row - 1,col - 1) == Entry.S_UNSCORED || safeGet(board,row - 1,col - 1) == Entry.S_SCORED)&&
+                (safeGet(board,row + 1,col + 1) == Entry.S_UNSCORED || safeGet(board,row + 1,col + 1) == Entry.S_SCORED)) {
                 score += 1;
                 board[row - 1][col - 1] = Entry.S_SCORED;
                 board[row + 1][col + 1] = Entry.S_SCORED;
                 board[row][col] = Entry.O_SCORED;
             }
-            if (board[row][col + 1] == Entry.S_UNSCORED && board[row][col - 1] == Entry.S_UNSCORED) {
+            if ((safeGet(board,row,col + 1) == Entry.S_UNSCORED || safeGet(board,row,col + 1) == Entry.S_SCORED ) &&
+                (safeGet(board,row,col - 1) == Entry.S_UNSCORED || safeGet(board,row,col - 1) == Entry.S_SCORED)) {
                 score += 1;
                 board[row][col + 1] = Entry.S_SCORED;
                 board[row][col - 1] = Entry.S_SCORED;
@@ -255,6 +279,13 @@ public class SOS {
         return score;
     }
 
+    /**
+     * Hilfsmethode um ArrayOutOfBounds abzufangen
+     * @param board Zu prüfendes Board
+     * @param row Zu prüfende Reihe
+     * @param col Zu prüfende Spalte
+     * @return Geprüfte Reihe und Spalte
+     */
     private static Entry safeGet(Entry[][] board, int row, int col) {
         if (row < 0 || row >= board.length || col < 0 || col >= board[0].length) {
             return null;

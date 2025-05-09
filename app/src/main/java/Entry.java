@@ -12,14 +12,27 @@ public enum Entry {
         this.scored = scored;
     }
 
+    /**
+     * Getter für den Anzeige Char
+     * @return Entsprechender Spielstein als Char
+     */
     public char getDisplay() {
         return display;
     }
 
+    /**
+     * Getter für den Wertungszustand
+     * @return True: Gewertet, False: Ungewertet
+     */
     public boolean isScored() {
         return scored;
     }
 
+    /**
+     * Methode um Chars in Entrys umzuwandeln
+     * @param display Spielsteine als Char
+     * @return Enum Spielsteine
+     */
     public static Entry fromDisplay(char display) {
       return switch (display) {
         case 'S' -> S_UNSCORED;
@@ -30,6 +43,10 @@ public enum Entry {
         };
     }
 
+    /**
+     * Methode um gewertete Spielsteine wieder zu entwerten
+     * @return Entwertete Spielsteine
+     */
     public Entry toUnscored() {
         return switch (this) {
             case S_SCORED -> S_UNSCORED;
@@ -39,6 +56,10 @@ public enum Entry {
         };
     }
 
+    /**
+     * Methode um Spielsteine von ungewertet zu gewertet zu wandeln
+     * @return Umgewandelter Spielstein
+     */
     public Entry toScored() {
         return switch (this) {
             case S_UNSCORED -> S_SCORED;
